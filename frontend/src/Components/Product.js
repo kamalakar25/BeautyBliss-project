@@ -32,8 +32,7 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { motion } from "framer-motion";
 
 const BASE_URL = process.env.REACT_APP_API_URL;
-const PLACEHOLDER_IMAGE =
-  "https://media.istockphoto.com/id/1317323736/photo/a-view-up-into-the-trees-direction-sky.jpg?s=612x612&w=0&k=20&c=i4HYO7xhao7CkGy7Zc_8XSNX_iqG0vAwNsrH1ERmw2Q=";
+const PLACEHOLDER_IMAGE = "https://via.placeholder.com/70?text=No+Image";
 
 // Styled components
 const StyledListItem = styled(ListItem)(({ theme }) => ({
@@ -394,7 +393,7 @@ const shuffleArray = (array) => {
   return newArray;
 };
 
-// ParlorListItem component with updated image handling
+// ParlorListItem component with enhanced image handling
 const ParlorListItem = ({ parlor, onImageClick, userLocation }) => {
   const navigate = useNavigate();
   const [openModal, setOpenModal] = useState(false);
@@ -404,12 +403,6 @@ const ParlorListItem = ({ parlor, onImageClick, userLocation }) => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
-  const [imageSrc, setImageSrc] = useState(
-    parlor.image
-      ? `${BASE_URL}/${parlor.image.replace(/\\/g, "/")}`
-      : PLACEHOLDER_IMAGE
-  );
-  console.log(parlor.image)
 
   const getGoogleMapsUrl = (location) => {
     const coords = parseParlorLocation(location);
@@ -518,18 +511,13 @@ const ParlorListItem = ({ parlor, onImageClick, userLocation }) => {
     }
   };
 
-  const handleImageError = () => {
-    setImageSrc(PLACEHOLDER_IMAGE);
-  };
-
   return (
     <>
       <StyledListItem onClick={handleBooking} sx={{ cursor: "pointer" }}>
         <ListItemAvatar>
           <StyledAvatar
-            src={imageSrc}
+            src={`${BASE_URL}/${parlor.image.replace(/\\/g, "/")}`}
             alt={parlor.name}
-            onError={handleImageError}
           />
         </ListItemAvatar>
         <ListItemText
