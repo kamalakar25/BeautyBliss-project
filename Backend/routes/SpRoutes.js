@@ -183,7 +183,7 @@ router.get("/get-services/:email", async (req, res) => {
 
 // Setup multer
 const storage = multer.diskStorage({
-  destination: "Uploads/", // Ensure folder exists in production
+  destination: "uploads/", // Ensure folder exists in production
   filename: (req, file, cb) => {
     cb(null, `${Date.now()}-${file.originalname}`);
   },
