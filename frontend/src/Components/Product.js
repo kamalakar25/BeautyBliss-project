@@ -1,12 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
   Container,
-  Grid,
-  Card,
-  CardMedia,
-  CardContent,
-  Typography,
-  Button,
   Box,
   FormControl,
   InputLabel,
@@ -25,6 +19,8 @@ import {
   ListItemText,
   ListItemAvatar,
   Avatar,
+  Typography,
+  Button,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import axios from "axios";
@@ -32,13 +28,14 @@ import { useNavigate, useLocation, Link } from "react-router-dom";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import FilterListIcon from "@mui/icons-material/FilterList";
-import { motion } from "framer-motion";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
+import { motion } from "framer-motion";
 
 const BASE_URL = process.env.REACT_APP_API_URL;
-const PLACEHOLDER_IMAGE = "https://via.placeholder.com/70?text=No+Image";
+const PLACEHOLDER_IMAGE =
+  "https://media.istockphoto.com/id/1317323736/photo/a-view-up-into-the-trees-direction-sky.jpg?s=612x612&w=0&k=20&c=i4HYO7xhao7CkGy7Zc_8XSNX_iqG0vAwNsrH1ERmw2Q=";
 
-// Styled components (unchanged)
+// Styled components
 const StyledListItem = styled(ListItem)(({ theme }) => ({
   background: "#ffffff",
   borderRadius: "12px",
@@ -343,7 +340,7 @@ const SendEnquiryButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-// Haversine formula and parseParlorLocation (unchanged)
+// Haversine formula and parseParlorLocation
 const calculateDistance = (lat1, lon1, lat2, lon2) => {
   if (
     !lat1 ||
@@ -387,7 +384,7 @@ const parseParlorLocation = (location) => {
   return { lat, lon };
 };
 
-// Fisher-Yates shuffle function for randomizing non-prioritized cards
+// Fisher-Yates shuffle function
 const shuffleArray = (array) => {
   const newArray = [...array];
   for (let i = newArray.length - 1; i > 0; i--) {
@@ -397,7 +394,7 @@ const shuffleArray = (array) => {
   return newArray;
 };
 
-// ParlorListItem component (unchanged)
+// ParlorListItem component with updated image handling
 const ParlorListItem = ({ parlor, onImageClick, userLocation }) => {
   const navigate = useNavigate();
   const [openModal, setOpenModal] = useState(false);
@@ -407,9 +404,12 @@ const ParlorListItem = ({ parlor, onImageClick, userLocation }) => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
-    const [imageSrc, setImageSrc] = useState(
-      parlor.image ? `${BASE_URL}/${parlor.image}` : PLACEHOLDER_IMAGE
-    );
+  const [imageSrc, setImageSrc] = useState(
+    parlor.image
+      ? `${BASE_URL}/${parlor.image.replace(/\\/g, "/")}`
+      : PLACEHOLDER_IMAGE
+  );
+  console.log(parlor.image)
 
   const getGoogleMapsUrl = (location) => {
     const coords = parseParlorLocation(location);
@@ -518,11 +518,9 @@ const ParlorListItem = ({ parlor, onImageClick, userLocation }) => {
     }
   };
 
-    const handleImageError = () => {
-      setImageSrc(PLACEHOLDER_IMAGE);
-    };
-
-
+  const handleImageError = () => {
+    setImageSrc(PLACEHOLDER_IMAGE);
+  };
 
   return (
     <>
@@ -857,6 +855,7 @@ const ParlorListItem = ({ parlor, onImageClick, userLocation }) => {
   );
 };
 
+// Google Maps Autocomplete hook
 const useGoogleMapsAutocomplete = (
   inputRef,
   setLocationInput,
@@ -950,7 +949,7 @@ const Product = () => {
     setUserLocation
   );
 
-  // Fetch service providers and filter by distance when enquiry modal opens
+  // Fetch service providers for enquiry modal
   useEffect(() => {
     if (enquiryModalOpen && userLocation) {
       const fetchServiceProviders = async () => {
@@ -977,7 +976,6 @@ const Product = () => {
             );
             return distance !== null && distance <= 20;
           });
-          console.log("Filtered service providers:", filteredProviders);
           setServiceProviders(filteredProviders);
         } catch (error) {
           console.error("Failed to fetch service providers:", error);
@@ -990,7 +988,7 @@ const Product = () => {
     }
   }, [enquiryModalOpen, userLocation]);
 
-  // Handle enquiry submission to providers of selected designation
+  // Handle enquiry submission
   const handleSubmitEnquiry = async () => {
     const email = localStorage.getItem("email");
     if (!email) {
@@ -1132,7 +1130,6 @@ const Product = () => {
           spRating: parseFloat(item.spRating) || 0,
           priority: parseInt(item.priority) || 0,
         }));
-        console.log("Parsed parlors:", parsed);
         setBeautyParlors(parsed);
         setFilteredParlors(parsed);
         setLoading(false);
@@ -1151,18 +1148,16 @@ const Product = () => {
     setServiceFilter(newService);
   }, [location.pathname, location.state]);
 
-  // Apply filters and sort with prioritized cards first, non-prioritized shuffled
+  // Apply filters and sort
   useEffect(() => {
     let filtered = beautyParlors;
 
-    // Apply designation filter
     if (designationFilter && designationFilter !== "All Products") {
       filtered = filtered.filter(
         (parlor) => parlor.designation === designationFilter
       );
     }
 
-    // Apply rating filter
     if (ratingFilter !== "all") {
       const selectedRange = ratingOptions.find(
         (option) => option.value === ratingFilter
@@ -1176,7 +1171,6 @@ const Product = () => {
       }
     }
 
-    // Apply distance filter
     if (distanceFilter !== "all" && userLocation) {
       filtered = filtered.filter((parlor) => {
         const parlorCoords = parseParlorLocation(parlor.location);
@@ -1198,24 +1192,17 @@ const Product = () => {
       });
     }
 
-    // Apply service filter
     if (serviceFilter) {
       filtered = filtered.filter((parlor) => parlor.service === serviceFilter);
     }
 
-    // Separate parlors into prioritized and non-prioritized
     const prioritized = filtered
       .filter((parlor) => parlor.priority > 0)
-      .sort((a, b) => b.priority - a.priority); // Sort prioritized by descending priority
+      .sort((a, b) => b.priority - a.priority);
     const nonPrioritized = filtered.filter((parlor) => parlor.priority === 0);
-
-    // Shuffle non-prioritized parlors
     const shuffledNonPrioritized = shuffleArray(nonPrioritized);
-
-    // Combine prioritized and shuffled non-prioritized
     const finalOrder = [...prioritized, ...shuffledNonPrioritized];
 
-    console.log("Sorted filtered parlors:", finalOrder);
     setFilteredParlors(finalOrder);
   }, [
     beautyParlors,
