@@ -130,10 +130,9 @@ const BookSlot = () => {
     duration: 60,
   });
 
-    // State for terms agreement
-    const [termsAgreed, setTermsAgreed] = useState(false);
-    const [termsModalOpen, setTermsModalOpen] = useState(false);
-  
+  // State for terms agreement
+  const [termsAgreed, setTermsAgreed] = useState(false);
+  const [termsModalOpen, setTermsModalOpen] = useState(false);
 
   // State for form validation errors
   const [errors, setErrors] = useState({});
@@ -160,7 +159,7 @@ const BookSlot = () => {
   const serviceRef = useRef(null);
   const amountRef = useRef(null);
   const favoriteEmployeeRef = useRef(null);
-    const termsRef = useRef(null);
+  const termsRef = useRef(null);
 
   // Function to generate time slots based on start and end times
   const generateTimeSlots = (startTime, endTime, interval = 60) => {
@@ -375,7 +374,6 @@ const BookSlot = () => {
     }
   };
 
-  
   const handleTermsChange = (e) => {
     setTermsAgreed(e.target.checked);
     setErrors((prev) => ({ ...prev, terms: "" }));
@@ -455,9 +453,9 @@ const BookSlot = () => {
     if (formData.time && !isSlotAvailable(formData.time, formData.duration))
       newErrors.time =
         "Selected time slot is not available for the required duration";
-        if (!termsAgreed)
-          newErrors.terms = "You must agree to the terms and conditions";
-    
+    if (!termsAgreed)
+      newErrors.terms = "You must agree to the terms and conditions";
+
     if (Object.keys(newErrors).length > 0) {
       const firstErrorField = Object.keys(newErrors)[0];
       const fieldRefs = {
@@ -468,11 +466,13 @@ const BookSlot = () => {
         amount: amountRef,
         favoriteEmployee: favoriteEmployeeRef,
         terms: termsRef,
-
       };
       const targetRef = fieldRefs[firstErrorField];
       if (targetRef.current) {
-        targetRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+        targetRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
         const inputElement = targetRef.current.querySelector("input, select");
         if (inputElement) inputElement.focus();
       }
@@ -1184,8 +1184,7 @@ const BookSlot = () => {
                   <>
                     <img
                       src={
-                        parlor.image ||
-                        "https://cdn.britannica.com/16/156416-050-909414BB/peacock-Indian-tail-feathers.jpg"
+                        `${BASE_URL}/${parlor.image}`
                       }
                       alt={parlor.name || "Shop"}
                       className="parlor-image mb-3"
@@ -1396,7 +1395,9 @@ const BookSlot = () => {
                     error={!!errors.date}
                     helperText={errors.date}
                     inputProps={{
-                      min: new Date(new Date().setDate(new Date().getDate() + 1))
+                      min: new Date(
+                        new Date().setDate(new Date().getDate() + 1)
+                      )
                         .toISOString()
                         .split("T")[0],
                     }}
@@ -1492,7 +1493,11 @@ const BookSlot = () => {
                       value={formData.time}
                       onChange={handleInputChange}
                       label="Available Time"
-                      disabled={!formData.date || !formData.favoriteEmployee || availableTimeSlots.length === 0}
+                      disabled={
+                        !formData.date ||
+                        !formData.favoriteEmployee ||
+                        availableTimeSlots.length === 0
+                      }
                       inputRef={timeRef}
                     >
                       <MenuItem
@@ -1614,9 +1619,10 @@ const BookSlot = () => {
                   Additional Services (Additional charges may apply)
                 </Typography>
                 {renderServiceCheckboxes()}
-                {formData.relatedServices.length > 0 && renderSelectedServices()}
+                {formData.relatedServices.length > 0 &&
+                  renderSelectedServices()}
 
-<Box
+                <Box
                   sx={{
                     mt: 2,
                     display: "flex",
@@ -1627,7 +1633,7 @@ const BookSlot = () => {
                 >
                   <FormControlLabel
                     control={
-                        <Checkbox
+                      <Checkbox
                         checked={termsAgreed}
                         onChange={handleTermsChange}
                         sx={{
@@ -1703,17 +1709,23 @@ const BookSlot = () => {
                     <Typography
                       sx={{ mb: 1, fontSize: "0.9rem", color: "#0e0f0f" }}
                     >
-                      1. <strong>Partial Payment:</strong> If 25% of the amount is paid as a deposit, no refund will be provided in case of cancellation.
+                      1. <strong>Partial Payment:</strong> If 25% of the amount
+                      is paid as a deposit, no refund will be provided in case
+                      of cancellation.
                     </Typography>
                     <Typography
                       sx={{ mb: 1, fontSize: "0.9rem", color: "#0e0f0f" }}
                     >
-                      2. <strong>Full Payment:</strong> If full payment is made and cancellation occurs, 25% of the total amount will be deducted as a cancellation fee.
+                      2. <strong>Full Payment:</strong> If full payment is made
+                      and cancellation occurs, 25% of the total amount will be
+                      deducted as a cancellation fee.
                     </Typography>
                     <Typography
                       sx={{ mb: 2, fontSize: "0.9rem", color: "#0e0f0f" }}
                     >
-                      3. <strong>Punctuality:</strong> If you do not arrive at the scheduled time, the appointment will not be automatically canceled, and no refund will be provided.
+                      3. <strong>Punctuality:</strong> If you do not arrive at
+                      the scheduled time, the appointment will not be
+                      automatically canceled, and no refund will be provided.
                     </Typography>
                     <Button
                       variant="contained"
