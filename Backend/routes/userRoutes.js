@@ -280,25 +280,26 @@ router.get("/cards/services", async (req, res) => {
       )
       .lean();
 
-    const services = shops.flatMap((shop) =>
-      shop.services.map((service) => ({
-        shopName: shop.shopName,
-        shopImage: service.shopImage,
-        location: shop.location,
-        serviceName: service.serviceName,
-        style: service.style,
-        price: service.price,
-        email: shop.email,
-        designation: shop.designation,
-        countPeople: shop.countPeople || 0,
-        spRating: shop.spRating || 0,
-        priority: shop.priority || 0,
-      }))
+    const services = shops.flatMap(
+      (shop) =>
+        shop.services?.map((service) => ({
+          shopName: shop.shopName,
+          shopImage: service.shopImage,
+          location: shop.location,
+          serviceName: service.serviceName,
+          style: service.style,
+          price: service.price,
+          email: shop.email,
+          designation: shop.designation,
+          countPeople: shop.countPeople || 0,
+          spRating: shop.spRating || 0,
+          priority: shop.priority || 0,
+        })) || []
     );
-    console.log(services);
+    // console.log(services);
     res.status(200).json(services);
   } catch (error) {
-    console.error("Error fetching services:", error);
+    // console.error("Error fetching services:", error);
     res.status(500).json({ message: "Error fetching services" });
   }
 });
@@ -812,7 +813,7 @@ router.post("/ForgotPassword/SendOTP", async (req, res) => {
     await mailTransporter.sendMail(mailOptions);
     res.status(200).json({ message: "OTP sent successfully" });
   } catch (error) {
-    console.error("Error sending OTP:", error);
+    // console.error("Error sending OTP:", error);
     res.status(500).json({ message: "Server error" });
   }
 });
@@ -859,7 +860,7 @@ router.post("/get/otp", async (req, res) => {
 
     res.status(200).json({ otp: user.otp });
   } catch (error) {
-    console.error("Error fetching OTP:", error);
+    // console.error("Error fetching OTP:", error);
     res.status(500).json({ message: "Server error" });
   }
 });
@@ -905,7 +906,7 @@ router.put("/update/password", async (req, res) => {
     await mailTransporter.sendMail(mailOptions);
     res.status(200).json({ message: "Password updated successfully" });
   } catch (error) {
-    console.error("Error updating password:", error);
+    // console.error("Error updating password:", error);
     res.status(500).json({ message: "Server error" });
   }
 });
@@ -941,7 +942,7 @@ router.post("/enquiries", async (req, res) => {
 
     res.status(201).json({ message: "Enquiry created successfully." });
   } catch (error) {
-    console.error("Error creating enquiry:", error);
+    // console.error("Error creating enquiry:", error);
     res.status(500).json({ message: "Server error." });
   }
 });
@@ -976,7 +977,7 @@ router.get("/enquiries/:parlorEmail", async (req, res) => {
 
     res.status(200).json(enquiries);
   } catch (error) {
-    console.error("Error fetching enquiries:", error);
+    // console.error("Error fetching enquiries:", error);
     res.status(500).json({ message: "Server error" });
   }
 });
@@ -1005,7 +1006,7 @@ router.put("/enquiries/:enquiryId", async (req, res) => {
 
     res.status(200).json({ message: "Enquiry updated successfully" });
   } catch (error) {
-    console.error("Error updating enquiry:", error);
+    // console.error("Error updating enquiry:", error);
     res.status(500).json({ message: "Server error" });
   }
 });
@@ -1015,7 +1016,7 @@ router.delete("/enquiries/:enquiryId", async (req, res) => {
   try {
     const { enquiryId } = req.params;
 
-    console.log(enquiryId);
+    // console.log(enquiryId);
 
     // Find the user and pull the enquiry
     const user = await User.findOneAndUpdate(
@@ -1030,7 +1031,7 @@ router.delete("/enquiries/:enquiryId", async (req, res) => {
 
     res.status(200).json({ message: "Enquiry deleted successfully" });
   } catch (error) {
-    console.error("Error deleting enquiry:", error);
+    // console.error("Error deleting enquiry:", error);
     res.status(500).json({ message: "Server error" });
   }
 });
@@ -1068,7 +1069,7 @@ router.get("/userEnquiries", async (req, res) => {
 
     res.json(formattedEnquiries);
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     res.status(500).json({ message: "Server error" });
   }
 });
