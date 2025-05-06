@@ -27,7 +27,7 @@ app.use('/api/razorpay', Razorpay);
 
 
 // Serve static files
-app.use('/uploads', express.static(path.join(__dirname, 'Uploads')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // MongoDB connection
 mongoose
